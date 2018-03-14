@@ -1,0 +1,423 @@
+#%RAML 1.0
+title: C-kassa
+description: Operator PKS service for already existed infrastructures to use program Cashbox
+version: v1
+protocols:
+  - HTTP
+baseUri: api.pks
+types:
+  success_response:
+    type: object
+    properties:
+      success:
+        required: true
+        example: true
+        type: boolean
+      status:
+        required: true
+        example: '200'
+        type: string
+  date_field:
+    pattern: '[\d]{2}\.[\d]{2}\.[\d]{4} [\d]{2}\:[\d]{2}\:[\d]{2}'
+    example: '24.11.2017 10:56:27'
+    type: string
+  currency_field:
+    enum: [BYR,USD,EUR,RUB]
+    example: 'BYR'
+    type: string
+  money_field:
+    pattern: '[\d]*.\.[\d]{2}'
+    example: '100.00'
+    type: string
+  quantity_field:
+    pattern: '[\d]*.\.[\d]{3}'
+    example: '1.000'
+    type: string
+  cashier_field:
+    example: 'Admin'
+    type: string
+  deposit_document:
+    type: object
+    properties:
+      cashier:
+        type: cashier_field 
+      currency:
+        type: currency_field
+      date:
+        type: date_field
+      sum:
+        type: money_field
+  sale_item:
+    type: object
+    properties:
+      type: 
+        enum: [PLAIN,EAN,SERVICE]
+        example: 'PLAIN'
+        type: string
+        description: Item GTIN code flag PLAIN=0; EAN=1; SERVICE=3
+      id:
+        example: 1
+        type: number
+        description: Item GTIN identifcator
+      quantity:
+        type: quantity_field
+      sum:
+        type: money_field
+      discount:
+        type: money_field
+  sale_document:
+    type: object
+    properties:
+      cashier:
+        type: cashier_field  
+      currency:
+        type: currency_field
+      date:
+        type: date_field
+      items:
+        type: sale_item[]
+      SubTotals:
+        type: object
+        properties:
+          sum:
+            type: money_field
+          discount:
+            type: money_field
+      Totals:
+        type: object
+        properties:
+          sum:
+            type: money_field
+          cashlessSum:
+            type: money_field
+          cashSum:
+            type: money_field
+          otherSum:
+            type: money_field
+  rollback_document:
+    type: object
+    properties: 
+      cashier:
+        type: cashier_field 
+      currency:
+        type: currency_field
+      date:
+        type: date_field
+      sum:
+        type: money_field
+  money_back_document:
+    type: object
+    properties:
+      cashier:
+        type: cashier_field 
+      currency:
+        type: currency_field
+      date:
+        type: date_field
+      money_back_item:
+        type: object
+        properties:
+          type: 
+            enum: [PLAIN,EAN,SERVICE]
+            example: 'PLAIN'
+            type: string
+            description: Item GTIN code flag PLAIN=0; EAN=1; SERVICE=3
+          id:
+            example: 1
+            type: number
+            description: Item GTIN identifcator
+          quantity:
+            type: quantity_field
+      Totals:
+        type: object
+        properties:
+          sum:
+            type: money_field
+          cashlessSum:
+            type: money_field
+          cashSum:
+            type: money_field
+  withdraw_document:
+    type: object
+    properties: 
+      cashier:
+        type: cashier_field 
+      currency:
+        type: currency_field
+      date:
+        type: date_field
+      sum:
+        type: money_field
+  x-report:
+    type: object
+    properties: 
+      cashier:
+        type: cashier_field
+      shift_open_date:
+        type: date_field
+      report_creation_date:
+        type: date_field
+      first_pay_dacument_number:
+        required: true
+        example: 10
+        type: integer
+      last_pay_dacument_number:
+        required: true
+        example: 22
+        type: integer
+      currency_count:
+        required: true
+        example: 1
+        type: integer
+        description: In current implementation always only one currency is BYN 
+      pay_documents_count:
+        required: true
+        example: 12
+        type: integer
+      total_sales:
+        type: money_field
+      curr_n:
+        type: currency_field
+      pay_documents_count_curr_n:
+        required: true
+        example: 12
+        type: integer
+      shift_total_curr_n:
+        type: money_field
+      cashless_sales_curr_n:
+        type: money_field
+      cash_sales_curr_n:
+        type: money_field
+      money_back_count_curr_n:
+        required: true
+        example: 3
+        type: integer
+      money_back_sum_curr_n:
+        type: money_field
+      deposit_counts_curr_n:
+        required: true
+        example: 12
+        type: integer
+      deposit_sum_curr_n:
+        type: money_field
+      withdraw_count_curr_n:
+        required: true
+        example: 12
+        type: integer
+      withdraw_sum_curr_n:
+        type: money_field
+      rollback_count_curr_n:
+        required: true
+        example: 3
+        type: integer
+      rollback_sum_curr_n:
+        type: money_field
+  z-report:
+    type: object
+    properties: 
+      cashier:
+        type: cashier_field
+      z-report_number:
+        required: true
+        example: 10
+        type: integer
+      shift_open_date:
+        type: date_field
+      first_pay_dacument_number:
+        required: true
+        example: 10
+        type: integer
+      last_pay_dacument_number:
+        required: true
+        example: 22
+        type: integer
+      currency_count:
+        required: true
+        example: 1
+        type: integer
+        description: In current implementation always only one currency is BYN 
+      pay_documents_count:
+        required: true
+        example: 12
+        type: integer
+      total_sales:
+        type: money_field
+      curr_n:
+        type: currency_field
+      pay_documents_count_curr_n:
+        required: true
+        example: 12
+        type: integer
+      shift_total_curr_n:
+        type: money_field
+      cashless_sales_curr_n:
+        type: money_field
+      cash_sales_curr_n:
+        type: money_field
+      money_back_count_curr_n:
+        required: true
+        example: 3
+        type: integer
+      money_back_sum_curr_n:
+        type: money_field
+      deposit_counts_curr_n:
+        required: true
+        example: 12
+        type: integer
+      deposit_sum_curr_n:
+        type: money_field
+      withdraw_count_curr_n:
+        required: true
+        example: 12
+        type: integer
+      withdraw_sum_curr_n:
+        type: money_field
+      rollback_count_curr_n:
+        required: true
+        example: 3
+        type: integer
+      rollback_sum_curr_n:
+        type: money_field
+/info:
+  get:
+    responses:
+      '200':
+        description: Retrieve Cashbox initial  information
+        body:
+          application/json:
+            type: object
+            properties:
+              data:
+                required: true
+                type: object
+                properties:
+                  company_name:
+                    required: false
+                    example: Рога и копыта
+                    type: string
+                  unp:
+                    required: true
+                    pattern: '[0-9]{9}'
+                    example: '123456789'
+                    description: Property description
+                    type: string
+                  registration_number:
+                    required: true
+                    pattern: '[0-9]{10}'
+                    example: '1234567890'
+                    description: Cashbox registration number in MNS
+                    type: string
+                  factory_number:
+                    required: true
+                    pattern: '[0-9A-Y]{13}'
+                    example: AVQ1019990201
+                    type: string
+              success:
+                required: true
+                example: 'yes'
+                type: string
+              status:
+                required: true
+                example: 200
+                type: number
+    queryParameters:
+      fields:
+        example: 'company_name,unp,registration_number, factory_number'
+        description: List of necessary fields
+        default: 'company_name,unp,registration_number, factory_number'
+        type: string
+/login:
+  get:
+    responses:
+      '200':
+        description: Cashbox work session initialisation via PIN
+        body:
+          application/json:
+            type: success_response
+    queryParameters:
+      pin:
+        format: int
+        example: 1234
+        type: number
+/logout:
+  get:
+    responses:
+      '200':
+        description: Close current work session
+        body:
+          application/json:
+            type: success_response
+/open-shift:
+  get:
+    responses:
+      '200':
+        body:
+          application/json:
+            type: success_response
+/close-shift:
+  get:
+    responses:
+      '200':
+        body:
+          application/json:
+            type: success_response
+/documents:
+  get:
+    responses: 
+      '200':
+        body:
+          application/json:
+            type: object
+            properties: 
+              success:
+                required: true
+                example: true
+                type: boolean
+              status:
+                required: true
+                example: '200'
+                type: string
+              documents:
+                type: (deposit_document | sale_document | rollback_document | money_back_document | withdraw_document)[]
+    queryParameters:
+      limit:
+        required: false
+        format: int
+        example: 10
+        type: number
+  post:
+    responses:
+      '200':
+        description: Document successfully created
+    body:
+      application/json:
+        type: object
+        properties:
+          doc_type:
+            required: true
+            enum: [deposit,sale,rollback,money_back,withdraw]
+            example: sale
+            description: 'Key attribute to parce document body, supported values - sale, deposit, withdraw, rollback, money_back'
+            type: string
+          document:
+           type: deposit_document | sale_document | rollback_document | money_back_document | withdraw_document
+/reports:
+  get:
+   responses: 
+      '200':
+        body:
+          application/json:
+            type: object
+            properties: 
+              success:
+                required: true
+                example: true
+                type: boolean
+              status:
+                required: true
+                example: '200'
+                type: string
+              report_type:
+                required: true
+                type: x-report | z-report
+
